@@ -1,0 +1,15 @@
+@startuml
+
+[*] --> EnAttente : demande d'emprunt
+
+EnAttente --> EnCours : Responsable valide
+EnAttente --> [*] : Responsable refuse
+
+EnCours --> EnRetard : date de retour dépassée
+
+EnRetard --> Restitue : retour validé
+EnCours --> Restitue : retour validé
+
+Restitue --> [*]
+
+@enduml
