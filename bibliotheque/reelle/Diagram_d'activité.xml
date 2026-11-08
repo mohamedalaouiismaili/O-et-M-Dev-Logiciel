@@ -1,0 +1,117 @@
+@startuml
+
+start
+
+partition Utilisateur {
+
+    :Chercher un ouvrage;
+    :Demander l'emprunt;
+}
+
+partition Responsable {
+
+    :Rechercher l'ouvrage;
+    :Vérifier sa disponibilité;
+}
+
+if (Ouvrage disponible ?) then (Oui)
+
+    partition Responsable {
+        :Vérifier l'état de l'ouvrage;
+    }
+
+    if (Ouvrage acceptable ?) then (Oui)
+
+        partition Responsable {
+            :Enregistrer l'emprunt;
+            :Mettre l'ouvrage à l'état\n"Emprunté";
+            :Définir la date de retour;
+        }
+
+        partition Utilisateur {
+            :Recevoir l'ouvrage;
+        }
+
+        partition "Agent de sécurité" {
+            :Contrôler la sortie;
+        }
+
+    else (Non)
+
+        partition Responsable {
+            :Refuser l'emprunt;
+            :Orienter l'ouvrage vers réparation\nou archivage;
+        }
+
+    endif
+
+else (Non)
+
+    partition Responsable {
+        :Informer l'utilisateur\nque l'ouvrage n'est pas disponible;
+    }
+
+endif
+
+partition Utilisateur {
+    :Retourner l'ouvrage;
+}
+
+partition Responsable {
+
+    :Vérifier l'état de l'ouvrage;
+    :Comparer la date de retour\navec la date prévue;
+}
+
+if (Retour en retard ?) then (Oui)
+
+    partition Responsable {
+        :Marquer l'emprunt\ncomme "En retard";
+        :Gérer le retard;
+    }
+
+endif
+
+if (Ouvrage détérioré ?) then (Oui)
+
+    partition Responsable {
+        :Mettre l'ouvrage\nà l'état "Détérioré";
+    }
+
+    partition Responsable {
+        :Décider de la réparation;
+    }
+
+    if (Réparable ?) then (Oui)
+
+        partition Responsable {
+            :Envoyer en réparation;
+            :Mettre l'ouvrage\nà l'état "Mise en réparation";
+            :Remettre en service\naprès réparation;
+        }
+
+    else (Non)
+
+        partition Responsable {
+            :Archiver l'ouvrage;
+            :Mettre l'ouvrage\nà l'état "Archivé";
+        }
+
+    endif
+
+else (Non)
+
+    partition Responsable {
+        :Enregistrer le retour;
+        :Mettre l'ouvrage\nà l'état "Restitué";
+        :Remettre en service;
+    }
+
+endif
+
+partition "Agent de sécurité" {
+    :Contrôler la sortie;
+}
+
+stop
+@enduml
