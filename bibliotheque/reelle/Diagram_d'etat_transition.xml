@@ -1,0 +1,32 @@
+@startuml
+
+[*] --> Commande
+
+Commande --> Recu : ouvrage reçu
+
+Recu --> MiseEnService : indexation / préparation
+
+MiseEnService --> Emprunte : emprunt
+Emprunte --> Restitue : retour
+
+Restitue --> MiseEnService : remise en rayon
+
+Emprunte --> EnRetard : date dépassée
+
+EnRetard --> Restitue : retour
+
+Emprunte --> Detériore : détérioration constatée
+Restitue --> Detériore : détérioration constatée
+
+Detériore --> MiseEnReparation : réparation nécessaire
+
+MiseEnReparation --> MiseEnService : réparation terminée
+
+Detériore --> Archive : non réparable
+MiseEnReparation --> Archive : retrait définitif
+
+Emprunte --> Archive : ouvrage perdu
+
+Archive --> [*]
+
+@enduml
