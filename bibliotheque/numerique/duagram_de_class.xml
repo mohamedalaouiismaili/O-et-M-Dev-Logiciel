@@ -1,0 +1,106 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+class SystemeGestion {
+    + rechercherOuvrage(critere : String) : List<Ouvrage>
+    + rechercherEmprunts(idUtilisateur : int) : List<Emprunt>
+    + verifierDisponibilite(ouvrage : Ouvrage) : boolean
+    + verifierConditionsEmprunt(utilisateur : Utilisateur) : boolean
+    + creerDemandeEmprunt(utilisateur : Utilisateur, ouvrage : Ouvrage) : Emprunt
+    + detecterRetard() : void
+    + mettreAJourStatuts() : void
+    + envoyerRappels() : void
+}
+
+class Utilisateur {
+    - idUtilisateur : int
+    - nom : String
+    - prenom : String
+    + rechercherOuvrage(critere : String) : List<Ouvrage>
+    + consulterEmprunts() : List<Emprunt>
+    + demanderEmprunt(ouvrage : Ouvrage) : Emprunt
+    + demanderRetour(emprunt : Emprunt) : void
+}
+
+class Responsable {
+    - idResponsable : int
+    - nom : String
+    - prenom : String
+    + verifierEmprunt(emprunt : Emprunt) : boolean
+    + validerEmprunt(emprunt : Emprunt) : void
+    + verifierRetour(emprunt : Emprunt) : boolean
+    + validerRetour(emprunt : Emprunt) : void
+    + ajouterOuvrage(ouvrage : Ouvrage) : void
+    + envoyerEnReparation(ouvrage : Ouvrage) : void
+    + archiverOuvrage(ouvrage : Ouvrage) : void
+    + traiterException(emprunt : Emprunt) : void
+}
+
+class Ouvrage {
+    - idOuvrage : int
+    - titre : String
+    - auteur : String
+    - categorie : String
+    - emplacement : String
+    - disponible : boolean
+    - etat : EtatOuvrage
+    + estDisponible() : boolean
+    + changerEtat(etat : EtatOuvrage) : void
+}
+
+class Emprunt {
+    - idEmprunt : int
+    - dateDemande : DateTime
+    - dateEmprunt : DateTime
+    - dateRetourPrevue : DateTime
+    - dateRetourEffective : DateTime
+    - statut : StatutEmprunt
+    + creer() : void
+    + valider() : void
+    + detecterRetard(dateActuelle : DateTime) : boolean
+    + enregistrerRetour(date : DateTime) : void
+}
+
+class Notification {
+    - idNotification : int
+    - dateEnvoi : DateTime
+    - message : String
+    - type : TypeNotification
+    + envoyer() : void
+}
+
+enum EtatOuvrage {
+    DISPONIBLE
+    EMPRUNTE
+    DETERIORE
+    MISE_EN_REPARATION
+    ARCHIVE
+}
+
+enum StatutEmprunt {
+    EN_ATTENTE
+    EN_COURS
+    EN_RETARD
+    RESTITUE
+}
+
+enum TypeNotification {
+    RAPPEL
+    ECHEANCE
+    RETARD
+}
+
+SystemeGestion "1" o-- "0..*" Utilisateur : gère
+SystemeGestion "1" o-- "0..*" Ouvrage : référence
+SystemeGestion "1" o-- "0..*" Emprunt : gère
+SystemeGestion "1" o-- "0..*" Notification : génère
+
+Utilisateur "1" --> "0..*" Emprunt : effectue
+Ouvrage "1" --> "0..*" Emprunt : concerne
+
+Responsable "1" --> "0..*" Emprunt : valide
+Responsable "1" --> "0..*" Ouvrage : gère
+
+Emprunt "1" --> "0..*" Notification : déclenche
+
+@enduml
