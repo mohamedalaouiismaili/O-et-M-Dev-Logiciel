@@ -1,0 +1,69 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+
+actor Utilisateur
+actor Responsable
+actor "Service d'authentification" as Auth
+
+rectangle "Application de gestion des emprunts" {
+
+    usecase "S'authentifier" as UC1
+    usecase "Rechercher un ouvrage" as UC2
+    usecase "Consulter la disponibilité" as UC3
+    usecase "Rechercher mes emprunts" as UC4
+
+    usecase "Demander un emprunt" as UC5
+    usecase "Vérifier automatiquement\nla disponibilité" as UC6
+    usecase "Vérifier automatiquement\nles conditions d'emprunt" as UC7
+    usecase "Faire vérifier l'ouvrage\npar le Responsable" as UC8
+    usecase "Valider l'emprunt" as UC9
+
+    usecase "Retourner un ouvrage" as UC10
+    usecase "Faire vérifier l'ouvrage\npar le Responsable" as UC11
+    usecase "Valider le retour" as UC12
+
+    usecase "Détecter automatiquement\nun retard" as UC13
+    usecase "Mettre à jour automatiquement\nl'état de l'emprunt" as UC14
+    usecase "Envoyer un rappel" as UC15
+
+    usecase "Gérer les ouvrages" as UC16
+    usecase "Ajouter un ouvrage" as UC17
+    usecase "Mettre en réparation" as UC18
+    usecase "Archiver un ouvrage" as UC19
+
+    usecase "Gérer un cas exceptionnel" as UC20
+}
+
+Utilisateur --> UC1
+Utilisateur --> UC2
+Utilisateur --> UC4
+Utilisateur --> UC5
+Utilisateur --> UC10
+Utilisateur --> UC3
+
+Responsable --> UC8
+Responsable --> UC9
+Responsable --> UC11
+Responsable --> UC12
+Responsable --> UC16
+Responsable --> UC20
+
+Auth --> UC1
+
+UC5 .> UC6 : <<include>>
+UC5 .> UC7 : <<include>>
+UC5 .> UC8 : <<include>>
+UC8 .> UC9 : <<include>>
+
+UC10 .> UC11 : <<include>>
+UC11 .> UC12 : <<include>>
+
+UC13 .> UC14 : <<include>>
+UC13 .> UC15 : <<include>>
+
+UC16 .> UC17 : <<include>>
+UC16 .> UC18 : <<include>>
+UC16 .> UC19 : <<include>>
+
+@enduml
