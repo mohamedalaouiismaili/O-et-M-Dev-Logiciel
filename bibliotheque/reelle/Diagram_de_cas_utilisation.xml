@@ -1,0 +1,58 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+
+actor Utilisateur
+actor Responsable
+actor "Agent de sécurité" as Securite
+
+rectangle "Bibliothèque réelle" {
+
+    usecase "Consulter / chercher\nun ouvrage" as UC1
+    usecase "Demander un emprunt" as UC2
+    usecase "Retourner un ouvrage" as UC3
+
+    usecase "Gérer les emprunts" as UC4
+    usecase "Vérifier la disponibilité" as UC5
+    usecase "Vérifier l'état de l'ouvrage" as UC6
+    usecase "Enregistrer l'emprunt" as UC7
+    usecase "Enregistrer le retour" as UC8
+
+    usecase "Gérer les retards" as UC9
+
+    usecase "Gérer le fonds" as UC10
+    usecase "Recevoir un ouvrage" as UC11
+    usecase "Mettre en service un ouvrage" as UC12
+    usecase "Ranger un ouvrage" as UC13
+    usecase "Envoyer en réparation" as UC14
+    usecase "Archiver un ouvrage" as UC15
+
+    usecase "Contrôler l'entrée / sortie" as UC16
+}
+
+Utilisateur --> UC1
+Utilisateur --> UC2
+Utilisateur --> UC3
+
+Responsable --> UC2
+Responsable --> UC3
+Responsable --> UC4
+Responsable --> UC9
+Responsable --> UC10
+
+Securite --> UC16
+
+UC2 .> UC5 : <<include>>
+UC2 .> UC6 : <<include>>
+UC2 .> UC7 : <<include>>
+
+UC3 .> UC6 : <<include>>
+UC3 .> UC8 : <<include>>
+
+UC10 .> UC11 : <<include>>
+UC10 .> UC12 : <<include>>
+UC10 .> UC13 : <<include>>
+UC10 .> UC14 : <<include>>
+UC10 .> UC15 : <<include>>
+
+@enduml
