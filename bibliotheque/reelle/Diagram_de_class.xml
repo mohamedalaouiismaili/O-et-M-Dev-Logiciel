@@ -1,0 +1,107 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+class Bibliotheque {
+    - nom : String
+    - adresse : String
+    + chercherOuvrage(critere : String) : List<Ouvrage>
+    + ajouterOuvrage(ouvrage : Ouvrage) : void
+    + archiverOuvrage(ouvrage : Ouvrage) : void
+}
+
+class Utilisateur {
+    - idUtilisateur : int
+    - nom : String
+    - prenom : String
+    + chercherOuvrage(critere : String) : List<Ouvrage>
+    + demanderEmprunt(ouvrage : Ouvrage) : void
+    + retournerOuvrage(ouvrage : Ouvrage) : void
+}
+
+class Responsable {
+    - idResponsable : int
+    - nom : String
+    - prenom : String
+    + verifierDisponibilite(ouvrage : Ouvrage) : boolean
+    + verifierEtat(ouvrage : Ouvrage) : EtatOuvrage
+    + enregistrerEmprunt(emprunt : Emprunt) : void
+    + enregistrerRetour(emprunt : Emprunt) : void
+    + gererRetard(emprunt : Emprunt) : void
+    + mettreEnService(ouvrage : Ouvrage) : void
+    + envoyerEnReparation(ouvrage : Ouvrage) : void
+    + archiver(ouvrage : Ouvrage) : void
+}
+
+class "Agent de sécurité" as AgentSecurite {
+    - idAgent : int
+    - nom : String
+    - prenom : String
+    + controlerEntree() : void
+    + controlerSortie() : void
+}
+
+class Ouvrage {
+    - idOuvrage : int
+    - titre : String
+    - auteur : String
+    - categorie : String
+    - etat : EtatOuvrage
+    - emplacement : String
+    + estDisponible() : boolean
+    + changerEtat(etat : EtatOuvrage) : void
+    + mettreEnService() : void
+    + mettreEnReparation() : void
+    + archiver() : void
+}
+
+class Emprunt {
+    - idEmprunt : int
+    - dateEmprunt : Date
+    - dateRetourPrevue : Date
+    - dateRetourEffective : Date
+    - statut : StatutEmprunt
+    + creer() : void
+    + enregistrerRetour(date : Date) : void
+    + estEnRetard(date : Date) : boolean
+}
+
+class Catalogue {
+    - reference : String
+    + rechercherParTitre(titre : String) : List<Ouvrage>
+    + rechercherParAuteur(auteur : String) : List<Ouvrage>
+    + rechercherParCategorie(categorie : String) : List<Ouvrage>
+}
+
+enum EtatOuvrage {
+    COMMANDE
+    RECU
+    MISE_EN_SERVICE
+    EMPRUNTE
+    RESTITUE
+    EN_RETARD
+    DETERIORE
+    MISE_EN_REPARATION
+    ARCHIVE
+}
+
+enum StatutEmprunt {
+    EN_COURS
+    EN_RETARD
+    RESTITUE
+}
+
+Bibliotheque "1" *-- "0..*" Ouvrage : possède
+Bibliotheque "1" *-- "1" Catalogue : contient
+
+Catalogue "1" --> "0..*" Ouvrage : référence
+
+Utilisateur "1" --> "0..*" Emprunt : effectue
+Ouvrage "1" --> "0..*" Emprunt : concerne
+
+Responsable "1" --> "0..*" Emprunt : gère
+Responsable "1" --> "0..*" Ouvrage : gère
+
+Bibliotheque "1" --> "0..*" Responsable : emploie
+Bibliotheque "1" --> "0..*" AgentSecurite : emploie
+
+@enduml
