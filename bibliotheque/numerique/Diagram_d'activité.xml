@@ -1,0 +1,146 @@
+@startuml
+
+start
+
+partition Utilisateur {
+
+    :Rechercher un ouvrage;
+    :Sélectionner un ouvrage;
+}
+
+partition Système {
+
+    :Afficher les informations;
+    :Vérifier automatiquement\nla disponibilité;
+}
+
+if (Ouvrage disponible ?) then (Oui)
+
+    partition Utilisateur {
+        :Demander l'emprunt;
+    }
+
+    partition Système {
+        :Vérifier automatiquement\nles conditions d'emprunt;
+    }
+
+    if (Conditions respectées ?) then (Oui)
+
+        partition Système {
+            :Créer une demande d'emprunt;
+            :Notifier le Responsable;
+        }
+
+        partition Responsable {
+            :Vérifier physiquement l'ouvrage;
+            :Vérifier l'opération;
+        }
+
+        if (Validation du Responsable ?) then (Oui)
+
+            partition Responsable {
+                :Valider l'emprunt;
+            }
+
+            partition Système {
+                :Enregistrer l'emprunt;
+                :Mettre l'ouvrage à l'état "Emprunté";
+                :Calculer automatiquement\nla date prévue de retour;
+                :Envoyer la confirmation;
+            }
+
+            partition Utilisateur {
+                :Prendre l'ouvrage;
+            }
+
+        else (Non)
+
+            partition Système {
+                :Refuser la demande;
+                :Notifier l'utilisateur;
+            }
+
+        endif
+
+    else (Non)
+
+        partition Système {
+            :Refuser automatiquement\nla demande;
+            :Afficher le motif;
+        }
+
+    endif
+
+else (Non)
+
+    partition Système {
+        :Afficher "Ouvrage indisponible";
+    }
+
+endif
+
+floating note left: **Gestion automatique du temps**
+
+partition Système {
+
+    :Surveiller automatiquement\nles dates de retour;
+}
+
+if (Échéance proche ?) then (Oui)
+
+    partition Système {
+        :Envoyer un rappel;
+    }
+
+endif
+
+if (Date dépassée ?) then (Oui)
+
+    partition Système {
+        :Mettre l'emprunt à l'état "En retard";
+        :Mettre à jour les informations;
+        :Envoyer une notification de retard;
+    }
+
+endif
+
+floating note left: **Retour**
+
+partition Utilisateur {
+    :Présenter l'ouvrage pour le retour;
+}
+
+partition Responsable {
+    :Vérifier physiquement l'ouvrage;
+}
+
+if (Ouvrage acceptable ?) then (Oui)
+
+    partition Responsable {
+        :Valider le retour;
+    }
+
+    partition Système {
+        :Enregistrer la date de retour;
+        :Mettre l'emprunt à l'état "Restitué";
+        :Rendre l'ouvrage disponible;
+    }
+
+else (Non)
+
+    partition Responsable {
+        :Déclarer l'ouvrage détérioré;
+    }
+
+    partition Système {
+        :Mettre à jour l'état de l'ouvrage;
+    }
+
+    partition Responsable {
+        :Décider réparation ou archivage;
+    }
+
+endif
+
+stop
+@enduml
